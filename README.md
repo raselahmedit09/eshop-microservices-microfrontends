@@ -2,6 +2,13 @@
 
 An e-commerce backend built as .NET 10 microservices. Each service owns its own database. The services talk to each other over REST (through a YARP API gateway), gRPC and RabbitMQ.
 
+## Repository layout
+
+```
+backend/    .NET microservices, API gateway, docker-compose and the solution file
+frontend/   Angular micro-frontends (in progress)
+```
+
 ## Architecture
 
 ```mermaid
@@ -145,7 +152,7 @@ Dependencies point inward: `Ordering.Domain` references nothing. `Ordering.Appli
 
 ### docker-compose (Podman or Docker)
 
-From `src/`:
+From `backend/`:
 
 ```bash
 docker compose -f docker-compose.yml -f docker-compose.override.yml up -d --build
