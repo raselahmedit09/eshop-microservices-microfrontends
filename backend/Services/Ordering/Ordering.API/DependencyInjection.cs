@@ -1,4 +1,5 @@
-﻿using BuildingBlocks.Exceptions.Handler;
+﻿using BuildingBlocks.Auth;
+using BuildingBlocks.Exceptions.Handler;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
@@ -10,6 +11,9 @@ namespace Ordering.API
         {
             services.AddCarter();
 
+            // Validates Keycloak access tokens and registers the shared Basket/Orders/Admin policies.
+            services.AddEshopAuthentication(configuration);
+
             services.AddExceptionHandler<CustomExceptionHandler>();
             services.AddHealthChecks()
                 .AddSqlServer(configuration.GetConnectionString("Database"));
@@ -19,6 +23,9 @@ namespace Ordering.API
 
         public static WebApplication UseApiServices(this WebApplication app)
         {
+            app.UseAuthentication();
+            app.UseAuthorization();
+
             app.MapCarter();
 
             app.UseExceptionHandler(options => { });

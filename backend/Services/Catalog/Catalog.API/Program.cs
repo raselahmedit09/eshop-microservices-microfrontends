@@ -1,3 +1,4 @@
+using BuildingBlocks.Auth;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
@@ -42,12 +43,19 @@ if (builder.Environment.IsDevelopment())
 // Converts unhandled exceptions (not found, validation, etc.) into consistent ProblemDetails responses.
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 
+// Validates Keycloak access tokens and registers the shared Basket/Orders/Admin policies (BuildingBlocks.Auth).
+builder.Services.AddEshopAuthentication(builder.Configuration);
+
 // Health check that verifies the PostgreSQL database is reachable; used by Docker/monitoring.
 builder.Services.AddHealthChecks().AddNpgSql(builder.Configuration.GetConnectionString("Database")!);
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+
+// Reads the Bearer token into HttpContext.User, then enforces RequireAuthorization on endpoints.
+app.UseAuthentication();
+app.UseAuthorization();
 
 // Maps all endpoints defined in the Carter modules.
 app.MapCarter();

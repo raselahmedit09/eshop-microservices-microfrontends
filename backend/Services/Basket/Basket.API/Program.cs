@@ -1,6 +1,7 @@
 
 
 using Basket.API.Data;
+using BuildingBlocks.Auth;
 using BuildingBlocks.Exceptions.Handler;
 using BuildingBlocks.Messaging.MassTransit;
 using Discount.Grpc;
@@ -90,6 +91,9 @@ builder.Services.AddMessageBroker(builder.Configuration);
 // Converts unhandled exceptions into consistent ProblemDetails responses.
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 
+// Validates Keycloak access tokens and registers the shared Basket/Orders/Admin policies (BuildingBlocks.Auth).
+builder.Services.AddEshopAuthentication(builder.Configuration);
+
 // Health checks for both dependencies: the service reports unhealthy if PostgreSQL or Redis is down.
 builder.Services.AddHealthChecks()
     .AddNpgSql(builder.Configuration.GetConnectionString("Database")!)
@@ -99,6 +103,10 @@ builder.Services.AddHealthChecks()
 var app = builder.Build();
 
 // configure the HTTP request pipeline
+
+// Reads the Bearer token into HttpContext.User, then enforces RequireAuthorization on endpoints.
+app.UseAuthentication();
+app.UseAuthorization();
 
 // Maps all endpoints defined in the Carter modules.
 app.MapCarter();
