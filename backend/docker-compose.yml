@@ -46,6 +46,9 @@ services:
       context: .
       dockerfile: ApiGateways/YarpApiGateway/Dockerfile
 
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.4
+
 volumes:
   postgres_catalog:
   postgres_basket:

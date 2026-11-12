@@ -140,3 +140,22 @@ services:
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+  keycloak:
+    container_name: keycloak
+    command: start-dev --import-realm
+    environment:
+      - KC_BOOTSTRAP_ADMIN_USERNAME=admin
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=admin
+      # The issuer in every token is always this browser address...
+      - KC_HOSTNAME=http://localhost:8180
+      # ...but a container asking keycloak:8080 gets keys and endpoints on keycloak:8080
+      - KC_HOSTNAME_BACKCHANNEL_DYNAMIC=true
+    ports:
+      - "8180:8080"
+    volumes:
+      - keycloak_data:/opt/keycloak/data          # realm, users survive container recreate
+      - ./keycloak:/opt/keycloak/data/import      # The KC6 export is loaded again from here
+
+# At the end of the file, in the volumes list
+volumes:
+  keycloak_data:
