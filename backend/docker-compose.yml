@@ -47,7 +47,11 @@ services:
       dockerfile: ApiGateways/YarpApiGateway/Dockerfile
 
   keycloak:
-    image: quay.io/keycloak/keycloak:26.4
+    image: quay.io/keycloak/keycloak:26.5.5
+
+  # Applies keycloak/eshop-realm.json to Keycloak, then exits. Same tool as production.
+  keycloak-config:
+    image: adorsys/keycloak-config-cli:6.5.1-26.5.5
 
 volumes:
   postgres_catalog:

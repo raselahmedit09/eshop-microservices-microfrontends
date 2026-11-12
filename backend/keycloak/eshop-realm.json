@@ -27,16 +27,16 @@
   "oauth2DeviceCodeLifespan": 600,
   "oauth2DevicePollingInterval": 5,
   "enabled": true,
-  "sslRequired": "external",
+  "sslRequired": "$(env:SSL_REQUIRED)",
   "registrationAllowed": true,
   "registrationEmailAsUsername": false,
   "rememberMe": true,
-  "verifyEmail": false,
+  "verifyEmail": "$(env:VERIFY_EMAIL)",
   "loginWithEmailAllowed": true,
   "duplicateEmailsAllowed": false,
   "resetPasswordAllowed": true,
   "editUsernameAllowed": false,
-  "bruteForceProtected": false,
+  "bruteForceProtected": true,
   "permanentLockout": false,
   "maxTemporaryLockouts": 0,
   "bruteForceStrategy": "MULTIPLE",
@@ -45,7 +45,7 @@
   "waitIncrementSeconds": 60,
   "quickLoginCheckMilliSeconds": 1000,
   "maxDeltaTimeSeconds": 43200,
-  "failureFactor": 30,
+  "failureFactor": 5,
   "roles": {
     "realm": [
       {
@@ -684,7 +684,7 @@
       "adminUrl": "",
       "baseUrl": "",
       "surrogateAuthRequired": false,
-      "enabled": true,
+      "enabled": "$(env:POSTMAN_CLIENT_ENABLED)",
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
@@ -747,10 +747,10 @@
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
-        "http://localhost:4200/*"
+        "$(env:SPA_URL)/*"
       ],
       "webOrigins": [
-        "http://localhost:4200"
+        "$(env:SPA_URL)"
       ],
       "notBefore": 0,
       "bearerOnly": false,
@@ -768,7 +768,7 @@
         "backchannel.logout.session.required": "true",
         "standard.token.exchange.enabled": "false",
         "frontchannel.logout.session.required": "true",
-        "post.logout.redirect.uris": "http://localhost:4200/*",
+        "post.logout.redirect.uris": "$(env:SPA_URL)/*",
         "oauth2.device.authorization.grant.enabled": "false",
         "display.on.consent.screen": "false",
         "pkce.code.challenge.method": "S256",
@@ -2582,5 +2582,6 @@
   },
   "clientPolicies": {
     "policies": []
-  }
+  },
+  "passwordPolicy": "length(8) and notUsername and notEmail and passwordHistory(3)"
 }
