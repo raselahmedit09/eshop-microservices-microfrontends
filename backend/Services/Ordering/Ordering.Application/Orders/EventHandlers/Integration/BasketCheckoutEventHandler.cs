@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Ordering.Application.Data;
 using Ordering.Application.Dtos;
 using Ordering.Application.Orders.Commands.CreateOrder;
+using Ordering.Domain.Models;
 using Ordering.Domain.ValueObjects;
 
 namespace Ordering.Application.Orders.EventHandlers.Integration
@@ -24,6 +25,15 @@ namespace Ordering.Application.Orders.EventHandlers.Integration
             {
                 logger.LogWarning("Order {OrderId} already exists, skipping duplicate {IntegrationEvent}", orderId.Value, context.Message.GetType().Name);
                 return;
+            }
+
+            // Keycloak users are not in the Customers table yet, so add the customer on their first order.
+            // No separate SaveChanges: CreateOrderHandler saves the customer and the order in one transaction.
+            var customerId = CustomerId.Of(context.Message.CustomerId);
+            if (!await dbContext.Customers.AnyAsync(c => c.Id == customerId, context.CancellationToken))
+            {
+                var name = $"{context.Message.FirstName} {context.Message.LastName}";
+                dbContext.Customers.Add(Customer.Create(customerId, name, context.Message.EmailAddress));
             }
 
             var command = MapToCreateOrderCommand(context.Message);

@@ -22,7 +22,8 @@
             .Produces<GetProductsResponse>(statusCode: StatusCodes.Status201Created)
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .WithSummary("Get Products")
-            .WithDescription("Get Products");
+            .WithDescription("Get Products")
+            .AllowAnonymous(); // browsing the catalog needs no login
         }
     }
 }

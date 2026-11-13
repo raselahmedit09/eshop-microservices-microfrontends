@@ -1,4 +1,5 @@
-﻿using Basket.API.Dtos;
+﻿using System.Security.Claims;
+using Basket.API.Dtos;
 using Mapster;
 using MediatR;
 
@@ -10,8 +11,13 @@ namespace Basket.API.Basket.CheckoutBasket
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapPost("/basket/checkout", async (CheckoutBasketRequest request, ISender sender) =>
+            app.MapPost("/basket/checkout", async (CheckoutBasketRequest request, ClaimsPrincipal user, ISender sender) =>
             {
+                // The basket key and Ordering's CustomerId are both the token's "sub" (a GUID in Keycloak)
+                var userId = user.GetUserId();
+                request.BasketCheckoutDto.UserName = userId;
+                request.BasketCheckoutDto.CustomerId = Guid.Parse(userId);
+
                 var command = request.Adapt<CheckoutBasketCommand>();
 
                 var result = await sender.Send(command);
@@ -25,7 +31,8 @@ namespace Basket.API.Basket.CheckoutBasket
         .ProducesProblem(StatusCodes.Status404NotFound)
         .ProducesProblem(StatusCodes.Status400BadRequest)
         .WithSummary("Checkout Basket")
-        .WithDescription("Checkout Basket");
+        .WithDescription("Checkout Basket")
+        .RequireAuthorization(AuthPolicies.Basket);
         }
     }
 }

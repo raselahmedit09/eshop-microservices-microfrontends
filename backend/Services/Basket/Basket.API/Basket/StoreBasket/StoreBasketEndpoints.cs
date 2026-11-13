@@ -1,4 +1,5 @@
-﻿using Mapster;
+﻿using System.Security.Claims;
+using Mapster;
 using MediatR;
 
 namespace Basket.API.Basket.StoreBasket
@@ -10,21 +11,25 @@ namespace Basket.API.Basket.StoreBasket
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapPost("/basket", async (StoreBasketRequest request, ISender sender) =>
+            app.MapPost("/basket", async (StoreBasketRequest request, ClaimsPrincipal user, ISender sender) =>
             {
+                // The token decides whose basket this is, not the request body
+                request.Cart.UserName = user.GetUserId();
+
                 var command = request.Adapt<StoreBasketCommand>();
 
                 var result = await sender.Send(command);
 
                 var response = result.Adapt<StoreBasketResponse>();
 
-                return Results.Created($"/basket/{response.UserName}", response);
+                return Results.Created("/basket", response);
             })
             .WithName("StoreBasket")
             .Produces<StoreBasketResponse>(StatusCodes.Status201Created)
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .WithSummary("Store Basket")
-            .WithDescription("Store Basket");
+            .WithDescription("Store Basket")
+            .RequireAuthorization(AuthPolicies.Basket);
         }
     }
 }

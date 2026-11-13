@@ -66,10 +66,11 @@ app.UseExceptionHandler(options => { });
 
 // Exposes GET /health; UIResponseWriter returns a detailed JSON status per dependency
 // instead of the default plain "Healthy"/"Unhealthy" text.
-app.UseHealthChecks("/health", new HealthCheckOptions
+// Mapped as an endpoint (not UseHealthChecks middleware) so AllowAnonymous can exempt it from the fallback policy.
+app.MapHealthChecks("/health", new HealthCheckOptions
 {
     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-});
+}).AllowAnonymous();
 
 // Starts the web server and blocks until the application shuts down.
 app.Run();

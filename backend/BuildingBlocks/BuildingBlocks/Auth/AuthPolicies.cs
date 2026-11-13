@@ -4,7 +4,8 @@ namespace BuildingBlocks.Auth
     public static class AuthPolicies
     {
         public const string Basket = "Basket";
-        public const string Orders = "Orders";
+        public const string OrdersRead = "OrdersRead";
+        public const string OrdersWrite = "OrdersWrite";
         public const string Admin = "Admin";
     }
 }

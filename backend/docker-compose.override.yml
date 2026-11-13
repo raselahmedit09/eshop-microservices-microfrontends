@@ -57,8 +57,14 @@ services:
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
       - ConnectionStrings__Database=Server=catalogdb;Port=5432;Database=CatalogDb;User Id=postgres;Password=postgres;Include Error Detail=true
+      # Issuer stays the browser address; signing keys are fetched over the container network
+      - Keycloak__Authority=http://localhost:8180/realms/eshop
+      - Keycloak__MetadataAddress=http://keycloak:8080/realms/eshop/.well-known/openid-configuration
+      - Keycloak__Audience=eshop-api
+      - Keycloak__RequireHttpsMetadata=false
     depends_on:
       - catalogdb
+      - keycloak
     ports:
       - "6000:8080"
       - "6060:8081"
@@ -77,11 +83,16 @@ services:
       - MessageBroker__Host=amqp://ecommerce-mq:5672
       - MessageBroker__UserName=guest
       - MessageBroker__Password=guest
+      - Keycloak__Authority=http://localhost:8180/realms/eshop
+      - Keycloak__MetadataAddress=http://keycloak:8080/realms/eshop/.well-known/openid-configuration
+      - Keycloak__Audience=eshop-api
+      - Keycloak__RequireHttpsMetadata=false
     depends_on:
       - basketdb
       - distributedcache
       - discount.grpc
       - messagebroker
+      - keycloak
     ports:
       - "6001:8080"
       - "6061:8081"
@@ -112,9 +123,14 @@ services:
       - MessageBroker__UserName=guest
       - MessageBroker__Password=guest
       - FeatureManagement__OrderFullfilment=false
+      - Keycloak__Authority=http://localhost:8180/realms/eshop
+      - Keycloak__MetadataAddress=http://keycloak:8080/realms/eshop/.well-known/openid-configuration
+      - Keycloak__Audience=eshop-api
+      - Keycloak__RequireHttpsMetadata=false
     depends_on:
       - orderdb
       - messagebroker
+      - keycloak
     ports:
       - "6003:8080"
       - "6063:8081"
@@ -130,10 +146,15 @@ services:
       - ReverseProxy__Clusters__catalog-cluster__Destinations__destination1__Address=http://catalog.api:8080
       - ReverseProxy__Clusters__basket-cluster__Destinations__destination1__Address=http://basket.api:8080
       - ReverseProxy__Clusters__ordering-cluster__Destinations__destination1__Address=http://ordering.api:8080
+      - Keycloak__Authority=http://localhost:8180/realms/eshop
+      - Keycloak__MetadataAddress=http://keycloak:8080/realms/eshop/.well-known/openid-configuration
+      - Keycloak__Audience=eshop-api
+      - Keycloak__RequireHttpsMetadata=false
     depends_on:
       - catalog.api
       - basket.api
       - ordering.api
+      - keycloak
     ports:
       - "6004:8080"
       - "6064:8081"

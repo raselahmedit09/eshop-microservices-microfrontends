@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -18,7 +19,7 @@ namespace BuildingBlocks.Auth
                     options.Authority = settings["Authority"];
                     options.Audience = settings["Audience"];
 
-                    // Inside containers keys are fetched from keycloak:8080 while the issuer stays localhost:8180 (B7)
+                    // Inside containers keys are fetched from keycloak:8080 while the issuer stays localhost:8180
                     var metadata = settings["MetadataAddress"];
                     if (!string.IsNullOrEmpty(metadata))
                     {
@@ -35,8 +36,12 @@ namespace BuildingBlocks.Auth
                 });
 
             services.AddAuthorizationBuilder()
+                // Secure by default: every endpoint needs a signed-in user unless it says AllowAnonymous.
+                // A new endpoint that forgets RequireAuthorization is therefore closed, not open.
+                .SetFallbackPolicy(new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build())
                 .AddPolicy(AuthPolicies.Basket, policy => policy.RequireAssertion(c => c.User.HasScope("Basket.ReadWrite")))
-                .AddPolicy(AuthPolicies.Orders, policy => policy.RequireAssertion(c => c.User.HasScope("Orders.Read")))
+                .AddPolicy(AuthPolicies.OrdersRead, policy => policy.RequireAssertion(c => c.User.HasScope("Orders.Read")))
+                .AddPolicy(AuthPolicies.OrdersWrite, policy => policy.RequireAssertion(c => c.User.HasScope("Orders.Write")))
                 .AddPolicy(AuthPolicies.Admin, policy => policy.RequireRole("Admin"));
 
             return services;

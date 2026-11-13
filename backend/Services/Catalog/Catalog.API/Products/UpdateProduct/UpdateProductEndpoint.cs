@@ -22,7 +22,8 @@
                 .ProducesProblem(StatusCodes.Status400BadRequest)
                 .ProducesProblem(StatusCodes.Status404NotFound)
                 .WithSummary("Update Product")
-                .WithDescription("Update Product");
+                .WithDescription("Update Product")
+                .RequireAuthorization(AuthPolicies.Admin);
         }
     }
 }

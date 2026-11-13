@@ -23,7 +23,8 @@ namespace Ordering.API.Endpoints
        .ProducesProblem(StatusCodes.Status400BadRequest)
        .ProducesProblem(StatusCodes.Status404NotFound)
        .WithSummary("Get Orders")
-       .WithDescription("Get Orders");
+       .WithDescription("Get Orders")
+       .RequireAuthorization(AuthPolicies.Admin);
         }
     }
 }

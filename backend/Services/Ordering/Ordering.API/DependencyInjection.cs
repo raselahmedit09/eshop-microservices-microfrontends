@@ -29,11 +29,12 @@ namespace Ordering.API
             app.MapCarter();
 
             app.UseExceptionHandler(options => { });
-            app.UseHealthChecks("/health",
+            // An endpoint (not UseHealthChecks middleware) so AllowAnonymous exempts it from the fallback policy
+            app.MapHealthChecks("/health",
                new HealthCheckOptions
                {
                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-               });
+               }).AllowAnonymous();
 
             return app;
         }

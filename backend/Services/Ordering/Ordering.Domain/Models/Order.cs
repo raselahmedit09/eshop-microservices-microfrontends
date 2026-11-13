@@ -1,6 +1,7 @@
 ﻿using Ordering.Domain.Abstractions;
 using Ordering.Domain.Enums;
 using Ordering.Domain.Events;
+using Ordering.Domain.Exceptions;
 using Ordering.Domain.ValueObjects;
 
 namespace Ordering.Domain.Models
@@ -49,6 +50,22 @@ namespace Ordering.Domain.Models
             Status = status;
 
             AddDomainEvent(new OrderUpdatedEvent(this));
+        }
+
+        // Only an order that is still waiting can be cancelled. The order is kept (status Cancelled),
+        // never deleted, because refunds, accounting and support still need the record.
+        public bool CanBeCancelled => Status == OrderStatus.Pending;
+
+        public void Cancel()
+        {
+            if (!CanBeCancelled)
+            {
+                throw new DomainException($"Order {Id.Value} is {Status} and can no longer be cancelled.");
+            }
+
+            Status = OrderStatus.Cancelled;
+
+            AddDomainEvent(new OrderCancelledEvent(this));
         }
 
         public void Add(ProductId productId, int quantity, decimal price)

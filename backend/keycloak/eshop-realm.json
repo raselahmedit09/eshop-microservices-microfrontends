@@ -732,7 +732,8 @@
         "microprofile-jwt",
         "Basket.ReadWrite",
         "Orders.Read",
-        "Catalog.Write"
+        "Catalog.Write",
+        "Orders.Write"
       ]
     },
     {
@@ -794,7 +795,8 @@
         "microprofile-jwt",
         "Basket.ReadWrite",
         "Orders.Read",
-        "Catalog.Write"
+        "Catalog.Write",
+        "Orders.Write"
       ]
     },
     {
@@ -1596,6 +1598,33 @@
     {
       "name": "Catalog.Write",
       "description": "",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "true",
+        "gui.order": "",
+        "consent.screen.text": "",
+        "include.in.openid.provider.metadata": "true"
+      },
+      "protocolMappers": [
+        {
+          "name": "eshop-api-audience",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.client.audience": "eshop-api",
+            "id.token.claim": "false",
+            "access.token.claim": "true",
+            "introspection.token.claim": "true",
+            "lightweight.claim": "false"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Orders.Write",
+      "description": "Cancel own orders",
       "protocol": "openid-connect",
       "attributes": {
         "include.in.token.scope": "true",

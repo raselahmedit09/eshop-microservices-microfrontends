@@ -1,4 +1,5 @@
-﻿using Mapster;
+﻿using System.Security.Claims;
+using Mapster;
 using MediatR;
 
 namespace Basket.API.Basket.GetBasket
@@ -9,9 +10,10 @@ namespace Basket.API.Basket.GetBasket
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapGet("/basket/{userName}", async (string userName, ISender sender) =>
+            // The basket owner comes from the token ("sub"), never from the URL, so nobody can read another user's basket
+            app.MapGet("/basket", async (ClaimsPrincipal user, ISender sender) =>
             {
-                var result = await sender.Send(new GetBasketQuery(userName));
+                var result = await sender.Send(new GetBasketQuery(user.GetUserId()));
 
                 var respose = result.Adapt<GetBasketResponse>();
 
@@ -22,7 +24,8 @@ namespace Basket.API.Basket.GetBasket
         .ProducesProblem(StatusCodes.Status400BadRequest)
         .ProducesProblem(StatusCodes.Status404NotFound)
         .WithSummary("Get Basket")
-        .WithDescription("Get Basket");
+        .WithDescription("Get Basket")
+        .RequireAuthorization(AuthPolicies.Basket);
         }
     }
 }

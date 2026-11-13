@@ -1,4 +1,5 @@
-﻿using Mapster;
+﻿using System.Security.Claims;
+using Mapster;
 using MediatR;
 
 namespace Basket.API.Basket.DeleteBasket
@@ -9,9 +10,9 @@ namespace Basket.API.Basket.DeleteBasket
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapDelete("/basket/{userName}", async (string userName, ISender sender) =>
+            app.MapDelete("/basket", async (ClaimsPrincipal user, ISender sender) =>
             {
-                var result = await sender.Send(new DeleteBasketCommand(userName));
+                var result = await sender.Send(new DeleteBasketCommand(user.GetUserId()));
 
                 var response = result.Adapt<DeleteBasketResponse>();
 
@@ -21,7 +22,8 @@ namespace Basket.API.Basket.DeleteBasket
             .Produces<DeleteBasketResponse>(StatusCodes.Status200OK)
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .WithSummary("Delete Basket")
-            .WithDescription("Delete Basket");
+            .WithDescription("Delete Basket")
+            .RequireAuthorization(AuthPolicies.Basket);
         }
     }
 }

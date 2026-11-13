@@ -1,3 +1,4 @@
-﻿global using Carter;
+﻿global using BuildingBlocks.Auth;
+global using Carter;
 global using Mapster;
 global using MediatR;

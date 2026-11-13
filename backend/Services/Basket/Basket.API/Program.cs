@@ -116,11 +116,12 @@ app.MapCarter();
 app.UseExceptionHandler(options => { });
 
 // Exposes GET /health with a detailed JSON status per dependency.
-app.UseHealthChecks("/health",
+// Mapped as an endpoint (not UseHealthChecks middleware) so AllowAnonymous can exempt it from the fallback policy.
+app.MapHealthChecks("/health",
     new HealthCheckOptions
     {
         ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-    });
+    }).AllowAnonymous();
 
 // Starts the web server and blocks until the application shuts down.
 app.Run();
