@@ -2,9 +2,20 @@
   <a class="brand" routerLink="/">eShop</a>
   <nav aria-label="Main">
     <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" ariaCurrentWhenActive="page">Catalog</a>
-    <a routerLink="/cart" routerLinkActive="active" ariaCurrentWhenActive="page">Cart</a>
-    <a routerLink="/orders" routerLinkActive="active" ariaCurrentWhenActive="page">Orders</a>
+    @if (auth.isLoggedIn()) {
+      <a routerLink="/cart" routerLinkActive="active" ariaCurrentWhenActive="page">Cart</a>
+      <a routerLink="/orders" routerLinkActive="active" ariaCurrentWhenActive="page">My orders</a>
+    }
   </nav>
+
+  <div class="account">
+    @if (auth.isLoggedIn()) {
+      <span>{{ auth.displayName() }}</span>
+      <button type="button" (click)="auth.logout()">Log out</button>
+    } @else {
+      <button type="button" (click)="auth.login()">Log in / Sign up</button>
+    }
+  </div>
 </header>
 
 <!-- Remote routes (catalog, basket, orders) render here -->

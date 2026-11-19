@@ -11,6 +11,9 @@
     "skipLibCheck": true,
     "isolatedModules": true,
     "experimentalDecorators": true,
+    // Apps import "shared" from source (projects/shared), so the root must cover the whole workspace.
+    // TypeScript 6 otherwise defaults rootDir to each project's own folder and reports TS6059.
+    "rootDir": ".",
     "paths": {
       "shared": [ "./projects/shared/src/public-api.ts" ]
       //"shared": ["./dist/shared"]
