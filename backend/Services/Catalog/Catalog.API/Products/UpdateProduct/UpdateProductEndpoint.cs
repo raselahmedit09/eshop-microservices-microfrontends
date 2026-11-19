@@ -18,6 +18,7 @@
                     return Results.Ok(response);
                 })
                 .WithName("UpdateProduct")
+                .WithTags("Products")
                 .Produces<UpdateProductResponse>(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status400BadRequest)
                 .ProducesProblem(StatusCodes.Status404NotFound)

@@ -1,12 +1,12 @@
 
 
 using Basket.API.Data;
-using BuildingBlocks.Auth;
 using BuildingBlocks.Exceptions.Handler;
 using BuildingBlocks.Messaging.MassTransit;
 using Discount.Grpc;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using BuildingBlocks.OpenApi;
 
 // Creates the host: loads configuration (appsettings.json, environment variables from
 // docker-compose such as ConnectionStrings__Redis), logging and the DI container.
@@ -99,8 +99,18 @@ builder.Services.AddHealthChecks()
     .AddNpgSql(builder.Configuration.GetConnectionString("Database")!)
     .AddRedis(builder.Configuration.GetConnectionString("Redis")!);
 
+// OpenAPI 3.0 document with plain number types, for the Angular client generator
+builder.Services.AddEshopOpenApi();
+
 
 var app = builder.Build();
+
+// GET /openapi/v1.json, only in Development so production does not publish its API description
+if (app.Environment.IsDevelopment())
+{
+    // AllowAnonymous: the fallback policy would otherwise demand a token for the document itself
+    app.MapOpenApi().AllowAnonymous();
+}
 
 // configure the HTTP request pipeline
 

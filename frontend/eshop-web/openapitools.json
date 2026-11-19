@@ -1,0 +1,39 @@
+{
+  "$schema": "./node_modules/@openapitools/openapi-generator-cli/config.schema.json",
+  "spaces": 2,
+  "generator-cli": {
+    "version": "7.27.0",
+    "generators": {
+      "catalog": {
+        "generatorName": "typescript-angular",
+        "inputSpec": "../../backend/Services/Catalog/Catalog.API/openapi/Catalog.API.json",
+        "output": "projects/shared/src/lib/api/generated/catalog",
+        "additionalProperties": {
+          "ngVersion": "21.0.0",
+          "providedIn": "root",
+          "fileNaming": "kebab-case"
+        }
+      },
+      "basket": {
+        "generatorName": "typescript-angular",
+        "inputSpec": "../../backend/Services/Basket/Basket.API/openapi/Basket.API.json",
+        "output": "projects/shared/src/lib/api/generated/basket",
+        "additionalProperties": {
+          "ngVersion": "21.0.0",
+          "providedIn": "root",
+          "fileNaming": "kebab-case"
+        }
+      },
+      "ordering": {
+        "generatorName": "typescript-angular",
+        "inputSpec": "../../backend/Services/Ordering/Ordering.API/openapi/Ordering.API.json",
+        "output": "projects/shared/src/lib/api/generated/ordering",
+        "additionalProperties": {
+          "ngVersion": "21.0.0",
+          "providedIn": "root",
+          "fileNaming": "kebab-case"
+        }
+      }
+    }
+  }
+}

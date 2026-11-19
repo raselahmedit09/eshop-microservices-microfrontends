@@ -18,7 +18,8 @@
                 return Results.Ok(response);
 
 
-            }).WithName("GetProduct")
+            }).WithName("GetProducts")
+            .WithTags("Products")
             .Produces<GetProductsResponse>(statusCode: StatusCodes.Status201Created)
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .WithSummary("Get Products")

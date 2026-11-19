@@ -18,6 +18,7 @@ namespace Ordering.API.Endpoints
                 return Results.Ok(response);
             })
        .WithName("GetOrdersByName")
+       .WithTags("Orders")
        .Produces<GetOrdersByNameResponse>(StatusCodes.Status200OK)
        .ProducesProblem(StatusCodes.Status400BadRequest)
        .ProducesProblem(StatusCodes.Status404NotFound)

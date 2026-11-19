@@ -1,0 +1,13 @@
+<header class="topbar">
+  <a class="brand" routerLink="/">eShop</a>
+  <nav aria-label="Main">
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" ariaCurrentWhenActive="page">Catalog</a>
+    <a routerLink="/cart" routerLinkActive="active" ariaCurrentWhenActive="page">Cart</a>
+    <a routerLink="/orders" routerLinkActive="active" ariaCurrentWhenActive="page">Orders</a>
+  </nav>
+</header>
+
+<!-- Remote routes (catalog, basket, orders) render here -->
+<main class="content">
+  <router-outlet />
+</main>

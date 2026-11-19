@@ -20,6 +20,7 @@ namespace Ordering.API.Endpoints
                 return Results.Ok(response);
             })
             .WithName("GetMyOrders")
+            .WithTags("Orders")
             .Produces<GetOrdersByCustomerResponse>(StatusCodes.Status200OK)
             .ProducesProblem(StatusCodes.Status401Unauthorized)
             .WithSummary("Get My Orders")

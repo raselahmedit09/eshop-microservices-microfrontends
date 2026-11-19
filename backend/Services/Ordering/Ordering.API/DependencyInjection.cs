@@ -2,6 +2,7 @@
 using BuildingBlocks.Exceptions.Handler;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using BuildingBlocks.OpenApi;
 
 namespace Ordering.API
 {
@@ -18,6 +19,9 @@ namespace Ordering.API
             services.AddHealthChecks()
                 .AddSqlServer(configuration.GetConnectionString("Database"));
 
+            // OpenAPI 3.0 document with plain number types, for the Angular client generator
+            services.AddEshopOpenApi();
+
             return services;
         }
 
@@ -27,6 +31,12 @@ namespace Ordering.API
             app.UseAuthorization();
 
             app.MapCarter();
+
+            // GET /openapi/v1.json, only in Development. AllowAnonymous because of the fallback policy
+            if (app.Environment.IsDevelopment())
+            {
+                app.MapOpenApi().AllowAnonymous();
+            }
 
             app.UseExceptionHandler(options => { });
             // An endpoint (not UseHealthChecks middleware) so AllowAnonymous exempts it from the fallback policy

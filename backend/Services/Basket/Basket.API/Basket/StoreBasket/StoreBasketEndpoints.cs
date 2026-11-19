@@ -25,6 +25,7 @@ namespace Basket.API.Basket.StoreBasket
                 return Results.Created("/basket", response);
             })
             .WithName("StoreBasket")
+            .WithTags("Basket")
             .Produces<StoreBasketResponse>(StatusCodes.Status201Created)
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .WithSummary("Store Basket")

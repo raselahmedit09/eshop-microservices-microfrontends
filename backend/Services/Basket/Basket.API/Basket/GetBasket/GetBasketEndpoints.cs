@@ -20,6 +20,7 @@ namespace Basket.API.Basket.GetBasket
                 return Results.Ok(respose);
             })
         .WithName("GetBasket")
+        .WithTags("Basket")
         .Produces<GetBasketResponse>(StatusCodes.Status200OK)
         .ProducesProblem(StatusCodes.Status400BadRequest)
         .ProducesProblem(StatusCodes.Status404NotFound)

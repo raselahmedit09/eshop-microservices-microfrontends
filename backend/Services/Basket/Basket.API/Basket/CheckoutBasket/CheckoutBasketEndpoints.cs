@@ -27,6 +27,7 @@ namespace Basket.API.Basket.CheckoutBasket
                 return Results.Ok(response);
             })
         .WithName("CheckoutBasket")
+        .WithTags("Basket")
         .Produces<CheckoutBasketResponse>(StatusCodes.Status200OK)
         .ProducesProblem(StatusCodes.Status404NotFound)
         .ProducesProblem(StatusCodes.Status400BadRequest)
