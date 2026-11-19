@@ -1,6 +1,6 @@
 import { loadRemoteModule } from '@angular-architects/native-federation';
 import { Routes } from '@angular/router';
-import { authGuard } from 'shared';
+import { adminGuard, authGuard } from 'shared';
 
 export const routes: Routes = [
   // Cart and orders belong to a customer, so they need a login; the catalog is public
@@ -13,6 +13,12 @@ export const routes: Routes = [
     path: 'orders',
     canActivate: [authGuard],
     loadChildren: () => loadRemoteModule('mfe-orders', './routes').then(m => m.routes),
+  },
+  // authGuard first (login), then adminGuard (role). Later this loads the mfe-admin remote.
+  {
+    path: 'admin',
+    canActivate: [authGuard, adminGuard],
+    loadComponent: () => import('./pages/admin-home').then(m => m.AdminHome),
   },
   // Catalog owns "/" and "/products", so it comes after the fixed paths
   {

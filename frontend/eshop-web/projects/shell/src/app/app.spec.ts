@@ -7,6 +7,7 @@ import { App } from './app';
 // Stand-in for AuthService so the test needs no Keycloak
 class FakeAuth {
   readonly isLoggedIn = signal(false);
+  readonly isAdmin = signal(false);
   readonly displayName = signal('');
   login = vi.fn();
   logout = vi.fn();
@@ -23,26 +24,36 @@ describe('App', () => {
     }).compileComponents();
   });
 
-  const links = (el: HTMLElement) => Array.from(el.querySelectorAll('nav a')).map(a => a.getAttribute('href'));
-
-  it('shows only the catalog and a login button when signed out', async () => {
+  async function render(): Promise<HTMLElement> {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
-    const el = fixture.nativeElement as HTMLElement;
+    return fixture.nativeElement as HTMLElement;
+  }
+
+  const links = (el: HTMLElement) => Array.from(el.querySelectorAll('nav a')).map(a => a.getAttribute('href'));
+
+  it('shows only home and a login button when signed out', async () => {
+    const el = await render();
 
     expect(links(el)).toEqual(['/']);
     el.querySelector<HTMLButtonElement>('.account button')!.click();
     expect(auth.login).toHaveBeenCalled();
   });
 
-  it('shows cart, orders and the user name when signed in', async () => {
+  it('shows cart, orders and the user name for a customer, but no admin link', async () => {
     auth.isLoggedIn.set(true);
-    auth.displayName.set('Rasel');
-    const fixture = TestBed.createComponent(App);
-    await fixture.whenStable();
-    const el = fixture.nativeElement as HTMLElement;
+    auth.displayName.set('customer');
+    const el = await render();
 
     expect(links(el)).toEqual(['/', '/cart', '/orders']);
-    expect(el.querySelector('.account')?.textContent).toContain('Rasel');
+    expect(el.querySelector('.account')?.textContent).toContain('customer');
+  });
+
+  it('shows the admin link for an admin', async () => {
+    auth.isLoggedIn.set(true);
+    auth.isAdmin.set(true);
+    const el = await render();
+
+    expect(links(el)).toEqual(['/', '/cart', '/orders', '/admin']);
   });
 });

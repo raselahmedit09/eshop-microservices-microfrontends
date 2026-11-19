@@ -1,10 +1,14 @@
 <header class="topbar">
   <a class="brand" routerLink="/">eShop</a>
   <nav aria-label="Main">
-    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" ariaCurrentWhenActive="page">Catalog</a>
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" ariaCurrentWhenActive="page">Home</a>
     @if (auth.isLoggedIn()) {
       <a routerLink="/cart" routerLinkActive="active" ariaCurrentWhenActive="page">Cart</a>
       <a routerLink="/orders" routerLinkActive="active" ariaCurrentWhenActive="page">My orders</a>
+    }
+    <!-- Hiding the link is only a convenience; the backend's Admin policy is the real check -->
+    @if (auth.isAdmin()) {
+      <a routerLink="/admin" routerLinkActive="active" ariaCurrentWhenActive="page">Admin</a>
     }
   </nav>
 
