@@ -15,7 +15,7 @@
     // TypeScript 6 otherwise defaults rootDir to each project's own folder and reports TS6059.
     "rootDir": ".",
     "paths": {
-      "shared": [ "./projects/shared/src/public-api.ts" ]
+      "shared": ["./projects/shared/src/public-api.ts"]
       //"shared": ["./dist/shared"]
     },
     "importHelpers": true,
@@ -59,6 +59,12 @@
     },
     {
       "path": "./projects/shared/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/mfe-admin/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/mfe-admin/tsconfig.spec.json"
     }
   ]
 }

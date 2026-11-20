@@ -1,0 +1,12 @@
+<div class="text-center py-5">
+  @if (type() === 'contact') {
+    <h1>Message sent</h1>
+    <p class="lead">Thanks for writing to us. We will reply soon.</p>
+  } @else {
+    <h1>Order submitted</h1>
+    <!-- The order is created asynchronously (RabbitMQ), so it can take a moment to show up -->
+    <p class="lead">Your order was submitted. It appears in My orders within a few seconds.</p>
+    <a class="btn btn-primary me-2" routerLink="/orders" [queryParams]="{ placed: 1 }">View my orders</a>
+  }
+  <a class="btn btn-outline-secondary" routerLink="/products">Continue shopping</a>
+</div>

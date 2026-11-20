@@ -1,0 +1,17 @@
+<div class="card h-100">
+  <a [routerLink]="['/products', product().id]">
+    <img class="card-img-top" [src]="image()" [alt]="product().name" (error)="fallback($event)" />
+  </a>
+  <div class="card-body">
+    <h3 class="h5 card-title">
+      <a class="text-decoration-none" [routerLink]="['/products', product().id]">{{ product().name }}</a>
+    </h3>
+    <p class="card-text small text-muted">{{ (product().category ?? []).join(', ') }}</p>
+  </div>
+  <div class="card-footer d-flex justify-content-between align-items-center">
+    <strong>{{ product().price | currency }}</strong>
+    <button type="button" class="btn btn-success btn-sm" (click)="addToCart.emit(product())">
+      <i class="bi bi-cart-plus" aria-hidden="true"></i> Add to cart
+    </button>
+  </div>
+</div>

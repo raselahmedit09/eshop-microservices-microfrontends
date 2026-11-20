@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
-  selector: 'app-orders-home',
-  template: `<h1>Orders remote loaded</h1>`,
+  selector: 'app-privacy',
+  templateUrl: './privacy.html',
+  styleUrl: './privacy.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class OrdersHome {}
+export class Privacy {}

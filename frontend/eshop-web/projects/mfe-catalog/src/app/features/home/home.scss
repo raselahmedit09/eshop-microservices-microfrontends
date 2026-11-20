@@ -1,0 +1,10 @@
+// Fixed shape so the page does not jump while the banner image loads (ngSrc "fill" needs a sized parent)
+.banner {
+  aspect-ratio: 3 / 1;
+  background: #e9ecef;
+  border-radius: 0.375rem;
+
+  img {
+    object-fit: cover;
+  }
+}

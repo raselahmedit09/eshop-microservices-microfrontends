@@ -1,0 +1,45 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+    <li class="breadcrumb-item"><a routerLink="/products">Products</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ product()?.name }}</li>
+  </ol>
+</nav>
+
+@if (product(); as p) {
+  <div class="row g-4">
+    <div class="col-md-6">
+      <img class="img-fluid rounded border" [src]="image(p)" [alt]="p.name" (error)="fallback($event)" />
+    </div>
+    <div class="col-md-6">
+      <h1 class="h3">{{ p.name }}</h1>
+      <p class="fs-4 text-success">{{ p.price | currency }}</p>
+      <p class="text-muted">{{ (p.category ?? []).join(', ') }}</p>
+
+      <label class="form-label" for="detail-color">Colour</label>
+      <select id="detail-color" class="form-select mb-3 narrow" [value]="color()" (change)="pickColor($event)">
+        @for (c of colors; track c) {
+          <option [value]="c">{{ c }}</option>
+        }
+      </select>
+
+      <label class="form-label" for="detail-quantity">Quantity</label>
+      <div class="input-group mb-3 narrow">
+        <button type="button" class="btn btn-outline-secondary" (click)="changeQuantity(-1)" aria-label="Decrease quantity">−</button>
+        <input id="detail-quantity" class="form-control text-center" [value]="quantity()" readonly />
+        <button type="button" class="btn btn-outline-secondary" (click)="changeQuantity(1)" aria-label="Increase quantity">+</button>
+      </div>
+
+      <button type="button" class="btn btn-success" (click)="basket.addItem(p, quantity(), color())">
+        <i class="bi bi-cart-plus" aria-hidden="true"></i> Add to cart
+      </button>
+
+      <h2 class="h5 mt-4">Description</h2>
+      <p>{{ p.description }}</p>
+    </div>
+  </div>
+} @else if (notFound()) {
+  <p>This product does not exist. <a routerLink="/products">Back to products</a></p>
+} @else {
+  <p>Loading product…</p>
+}

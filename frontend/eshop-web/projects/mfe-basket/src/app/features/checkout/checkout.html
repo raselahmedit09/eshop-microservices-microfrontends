@@ -1,0 +1,108 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+    <li class="breadcrumb-item"><a routerLink="/cart">Cart</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Checkout</li>
+  </ol>
+</nav>
+
+<h1 class="h3 mb-4">Checkout</h1>
+
+<div class="row g-4">
+  <form class="col-lg-8 row g-3 align-content-start" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <h2 class="h5">Shipping address</h2>
+    <div class="col-sm-6">
+      <label class="form-label" for="co-first">First name</label>
+      <input id="co-first" class="form-control" formControlName="firstName" autocomplete="given-name"
+             [class.is-invalid]="invalid('firstName')" />
+      <div class="invalid-feedback">Enter your first name.</div>
+    </div>
+    <div class="col-sm-6">
+      <label class="form-label" for="co-last">Last name</label>
+      <input id="co-last" class="form-control" formControlName="lastName" autocomplete="family-name"
+             [class.is-invalid]="invalid('lastName')" />
+      <div class="invalid-feedback">Enter your last name.</div>
+    </div>
+    <div class="col-12">
+      <label class="form-label" for="co-email">Email</label>
+      <input id="co-email" type="email" class="form-control" formControlName="emailAddress" autocomplete="email"
+             [class.is-invalid]="invalid('emailAddress')" />
+      <div class="invalid-feedback">Enter a valid email address.</div>
+    </div>
+    <div class="col-12">
+      <label class="form-label" for="co-address">Address</label>
+      <input id="co-address" class="form-control" formControlName="addressLine" autocomplete="street-address"
+             [class.is-invalid]="invalid('addressLine')" />
+      <div class="invalid-feedback">Enter your address.</div>
+    </div>
+    <div class="col-sm-5">
+      <label class="form-label" for="co-country">Country</label>
+      <input id="co-country" class="form-control" formControlName="country" autocomplete="country-name"
+             [class.is-invalid]="invalid('country')" />
+      <div class="invalid-feedback">Enter your country.</div>
+    </div>
+    <div class="col-sm-4">
+      <label class="form-label" for="co-state">State</label>
+      <input id="co-state" class="form-control" formControlName="state" autocomplete="address-level1"
+             [class.is-invalid]="invalid('state')" />
+      <div class="invalid-feedback">Enter your state.</div>
+    </div>
+    <div class="col-sm-3">
+      <label class="form-label" for="co-zip">ZIP</label>
+      <input id="co-zip" class="form-control" formControlName="zipCode" autocomplete="postal-code"
+             [class.is-invalid]="invalid('zipCode')" />
+      <div class="invalid-feedback">Enter your ZIP code.</div>
+    </div>
+
+    <h2 class="h5 mt-4">Payment</h2>
+    <!-- Demo only: never enter a real card. Basket masks the number and never sends the CVV to Ordering. -->
+    <div class="col-sm-6">
+      <label class="form-label" for="co-cardname">Name on card</label>
+      <input id="co-cardname" class="form-control" formControlName="cardName" autocomplete="cc-name"
+             [class.is-invalid]="invalid('cardName')" />
+      <div class="invalid-feedback">Enter the name on the card.</div>
+    </div>
+    <div class="col-sm-6">
+      <label class="form-label" for="co-cardnumber">Card number</label>
+      <input id="co-cardnumber" class="form-control" formControlName="cardNumber" inputmode="numeric" autocomplete="cc-number"
+             [class.is-invalid]="invalid('cardNumber')" />
+      <div class="invalid-feedback">12 to 19 digits.</div>
+    </div>
+    <div class="col-sm-4">
+      <label class="form-label" for="co-exp">Expiration (MM/YY)</label>
+      <input id="co-exp" class="form-control" formControlName="expiration" autocomplete="cc-exp"
+             [class.is-invalid]="invalid('expiration')" />
+      <div class="invalid-feedback">Use MM/YY, for example 08/27.</div>
+    </div>
+    <div class="col-sm-4">
+      <label class="form-label" for="co-cvv">CVV</label>
+      <input id="co-cvv" class="form-control" formControlName="cvv" inputmode="numeric" autocomplete="cc-csc"
+             [class.is-invalid]="invalid('cvv')" />
+      <div class="invalid-feedback">3 or 4 digits.</div>
+    </div>
+
+    <div class="col-12 d-flex gap-2 mt-3">
+      <a class="btn btn-outline-secondary" routerLink="/cart">Back to cart</a>
+      <button type="submit" class="btn btn-success" [disabled]="busy() || store.items().length === 0">
+        {{ busy() ? 'Placing order…' : 'Place order' }}
+      </button>
+    </div>
+  </form>
+
+  <aside class="col-lg-4">
+    <div class="card">
+      <h2 class="card-header h6 mb-0">Your cart ({{ store.count() }} items)</h2>
+      <ul class="list-group list-group-flush">
+        @for (item of store.items(); track item.productId + '-' + item.color) {
+          <li class="list-group-item d-flex justify-content-between gap-2">
+            <span>{{ item.quantity }} × {{ item.productName }} <small class="text-muted">({{ item.color }})</small></span>
+            <span>{{ (item.discountedPrice ?? item.price ?? 0) * (item.quantity ?? 0) | currency }}</span>
+          </li>
+        }
+        <li class="list-group-item d-flex justify-content-between fw-bold">
+          <span>Total</span><span>{{ store.total() | currency }}</span>
+        </li>
+      </ul>
+    </div>
+  </aside>
+</div>

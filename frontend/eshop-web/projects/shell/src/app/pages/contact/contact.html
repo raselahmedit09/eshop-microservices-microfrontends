@@ -1,0 +1,21 @@
+<h1 class="mb-4">Contact us</h1>
+
+<form [formGroup]="form" (ngSubmit)="send()" class="row g-3 contact-form">
+  <div class="col-12">
+    <label class="form-label" for="contact-name">Name</label>
+    <input id="contact-name" class="form-control" formControlName="name" autocomplete="name" />
+  </div>
+  <div class="col-12">
+    <label class="form-label" for="contact-email">Email address</label>
+    <input id="contact-email" type="email" class="form-control" formControlName="email" autocomplete="email"
+           aria-describedby="contact-email-help" />
+    <div id="contact-email-help" class="form-text">We never share your email with anyone else.</div>
+  </div>
+  <div class="col-12">
+    <label class="form-label" for="contact-message">Message</label>
+    <textarea id="contact-message" rows="5" class="form-control" formControlName="message"></textarea>
+  </div>
+  <div class="col-12">
+    <button type="submit" class="btn btn-primary" [disabled]="form.invalid">Send message</button>
+  </div>
+</form>

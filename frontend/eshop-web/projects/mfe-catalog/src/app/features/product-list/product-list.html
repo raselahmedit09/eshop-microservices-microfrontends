@@ -1,0 +1,24 @@
+<div class="row g-4">
+  <aside class="col-md-3">
+    <h2 class="h5">Categories</h2>
+    <nav class="list-group" aria-label="Categories">
+      <a class="list-group-item list-group-item-action" routerLink="/products"
+         [class.active]="!selected()" [attr.aria-current]="!selected() ? 'page' : null">All products</a>
+      @for (c of categories(); track c) {
+        <a class="list-group-item list-group-item-action" routerLink="/products" [queryParams]="{ category: c }"
+           [class.active]="selected() === c" [attr.aria-current]="selected() === c ? 'page' : null">{{ c }}</a>
+      }
+    </nav>
+  </aside>
+
+  <section class="col-md-9">
+    <h1 class="h3 mb-3">{{ selected() || 'All products' }}</h1>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
+      @for (p of products(); track p.id) {
+        <div class="col"><eshop-product-card [product]="p" (addToCart)="basket.addItem($event)" /></div>
+      } @empty {
+        <p>No products in this category.</p>
+      }
+    </div>
+  </section>
+</div>

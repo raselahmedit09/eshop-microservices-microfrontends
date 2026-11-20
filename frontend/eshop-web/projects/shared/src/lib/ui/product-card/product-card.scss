@@ -1,0 +1,5 @@
+// Same height for every image, whatever the source size
+.card-img-top {
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}

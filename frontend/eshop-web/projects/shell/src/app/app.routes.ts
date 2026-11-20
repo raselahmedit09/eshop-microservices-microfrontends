@@ -14,16 +14,23 @@ export const routes: Routes = [
     canActivate: [authGuard],
     loadChildren: () => loadRemoteModule('mfe-orders', './routes').then(m => m.routes),
   },
-  // authGuard first (login), then adminGuard (role). Later this loads the mfe-admin remote.
+  // authGuard first (login), then adminGuard (role)
   {
     path: 'admin',
     canActivate: [authGuard, adminGuard],
-    loadComponent: () => import('./pages/admin-home').then(m => m.AdminHome),
+    loadChildren: () => loadRemoteModule('mfe-admin', './routes').then(m => m.routes),
   },
-  // Catalog owns "/" and "/products", so it comes after the fixed paths
+
+  // Shell's own pages (Shopping.Web's Contact, Privacy, Confirmation)
+  { path: 'contact', loadComponent: () => import('./pages/contact/contact').then(m => m.Contact) },
+  { path: 'privacy', loadComponent: () => import('./pages/privacy/privacy').then(m => m.Privacy) },
+  { path: 'confirmation', loadComponent: () => import('./pages/confirmation/confirmation').then(m => m.Confirmation) },
+
+  // Catalog owns "/", "/products" and "/products/:id", so it comes after the fixed paths.
+  // Its own routes have no "**", so unknown paths fall through to the not-found page below.
   {
     path: '',
     loadChildren: () => loadRemoteModule('mfe-catalog', './routes').then(m => m.routes),
   },
-  { path: '**', redirectTo: '' },
+  { path: '**', loadComponent: () => import('./pages/not-found/not-found').then(m => m.NotFound) },
 ];

@@ -1,0 +1,68 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Cart</li>
+  </ol>
+</nav>
+
+<h1 class="h3 mb-3">Your cart</h1>
+
+@if (store.items().length === 0) {
+  <p>Your cart is empty. <a routerLink="/products">Browse products</a></p>
+} @else {
+  <div class="table-responsive">
+    <table class="table align-middle">
+      <thead>
+        <tr>
+          <th scope="col">Product</th>
+          <th scope="col">Colour</th>
+          <th scope="col">Quantity</th>
+          <th scope="col" class="text-end">Price</th>
+          <th scope="col"><span class="visually-hidden">Remove</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of store.items(); track item.productId + '-' + item.color) {
+          <tr>
+            <td>{{ item.productName }}</td>
+            <td>{{ item.color }}</td>
+            <td class="quantity">
+              <div class="input-group input-group-sm">
+                <button type="button" class="btn btn-outline-secondary" (click)="change(item, (item.quantity ?? 0) - 1)"
+                        [attr.aria-label]="'Decrease quantity of ' + item.productName">−</button>
+                <input class="form-control text-center" [value]="item.quantity" readonly
+                       [attr.aria-label]="'Quantity of ' + item.productName" />
+                <button type="button" class="btn btn-outline-secondary" (click)="change(item, (item.quantity ?? 0) + 1)"
+                        [attr.aria-label]="'Increase quantity of ' + item.productName">+</button>
+              </div>
+            </td>
+            <td class="text-end">
+              @if (item.discount) {
+                <del class="text-muted small me-1">{{ lineBeforeDiscount(item) | currency }}</del>
+              }
+              {{ lineTotal(item) | currency }}
+            </td>
+            <td class="text-end">
+              <button type="button" class="btn btn-outline-danger btn-sm" (click)="change(item, 0)"
+                      [attr.aria-label]="'Remove ' + item.productName">
+                <i class="bi bi-trash" aria-hidden="true"></i>
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+      <tfoot>
+        <tr>
+          <th scope="row" colspan="3">Total</th>
+          <th class="text-end">{{ store.total() | currency }}</th>
+          <th></th>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <div class="d-flex flex-wrap justify-content-between gap-2">
+    <a class="btn btn-outline-secondary" routerLink="/products">Continue shopping</a>
+    <a class="btn btn-success" routerLink="checkout">Checkout</a>
+  </div>
+}

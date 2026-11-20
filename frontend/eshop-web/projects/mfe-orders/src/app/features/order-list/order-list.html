@@ -1,0 +1,57 @@
+<h1 class="h3 mb-3">My orders</h1>
+
+@if (justPlaced) {
+  <div class="alert alert-info" role="status">Your new order is being processed. It appears here within a few seconds.</div>
+}
+
+<div class="table-responsive">
+  <table class="table table-striped align-middle">
+    <thead>
+      <tr>
+        <th scope="col">Order</th>
+        <th scope="col">First name</th>
+        <th scope="col">Last name</th>
+        <th scope="col">Email</th>
+        <th scope="col">Address</th>
+        <th scope="col">Card name</th>
+        <th scope="col">Status</th>
+        <th scope="col" class="text-end">Total</th>
+        <th scope="col"><span class="visually-hidden">Actions</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (o of orders(); track o.id) {
+        <tr>
+          <td>{{ o.orderName }}</td>
+          <td>{{ o.shippingAddress.firstName }}</td>
+          <td>{{ o.shippingAddress.lastName }}</td>
+          <td>{{ o.shippingAddress.emailAddress }}</td>
+          <td>{{ o.shippingAddress.addressLine }}</td>
+          <td>{{ o.payment.cardName }}</td>
+          <td>
+            <span [class]="badgeClass(o)">{{ statusName[o.status] }}</span>
+          </td>
+          <td class="text-end">{{ total(o) | currency }}</td>
+          <td class="text-end actions">
+            @if (canCancel(o)) {
+              @if (confirming() === o.id) {
+                <span class="me-2">Cancel this order?</span>
+                <button type="button" class="btn btn-danger btn-sm me-1" (click)="cancel(o)">Yes, cancel</button>
+                <button type="button" class="btn btn-outline-secondary btn-sm" (click)="confirming.set(null)">No</button>
+              } @else {
+                <button type="button" class="btn btn-outline-danger btn-sm" [disabled]="cancelling() === o.id"
+                        (click)="confirming.set(o.id)" [attr.aria-label]="'Cancel order ' + o.orderName">
+                  {{ cancelling() === o.id ? 'Cancelling…' : 'Cancel' }}
+                </button>
+              }
+            }
+          </td>
+        </tr>
+      } @empty {
+        <tr><td colspan="9">{{ loaded() ? 'No orders yet.' : 'Loading orders…' }}</td></tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+<a class="btn btn-outline-secondary" routerLink="/products">Continue shopping</a>

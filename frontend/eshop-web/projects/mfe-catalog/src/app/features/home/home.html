@@ -1,0 +1,27 @@
+<section class="banner position-relative mb-5" aria-roledescription="carousel" aria-label="Featured products">
+  <img class="rounded" [ngSrc]="banners[current()]" fill priority alt="Featured products" />
+  <button type="button" class="btn btn-dark btn-sm position-absolute top-50 start-0 ms-2" (click)="move(-1)" aria-label="Previous banner">
+    <i class="bi bi-chevron-left" aria-hidden="true"></i>
+  </button>
+  <button type="button" class="btn btn-dark btn-sm position-absolute top-50 end-0 me-2" (click)="move(1)" aria-label="Next banner">
+    <i class="bi bi-chevron-right" aria-hidden="true"></i>
+  </button>
+</section>
+
+<h2 class="h4 mb-3">Last products</h2>
+<div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4 mb-5">
+  @for (p of latest(); track p.id) {
+    <div class="col"><eshop-product-card [product]="p" (addToCart)="basket.addItem($event)" /></div>
+  } @empty {
+    <p class="text-muted">No products yet.</p>
+  }
+</div>
+
+<h2 class="h4 mb-3">Best products</h2>
+<div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
+  @for (p of best(); track p.id) {
+    <div class="col"><eshop-product-card [product]="p" (addToCart)="basket.addItem($event)" /></div>
+  }
+</div>
+
+<p class="text-center mt-4"><a class="btn btn-outline-primary" routerLink="/products">See all products</a></p>

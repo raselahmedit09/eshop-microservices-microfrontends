@@ -1,0 +1,73 @@
+<h1 class="h3 mb-3">Manage products</h1>
+
+<form class="card card-body mb-4" [formGroup]="form" (ngSubmit)="save()" novalidate>
+  <h2 class="h5">{{ editingId() ? 'Edit product' : 'New product' }}</h2>
+  <div class="row g-3">
+    <div class="col-md-4">
+      <label class="form-label" for="pa-name">Name</label>
+      <input id="pa-name" class="form-control" formControlName="name" />
+    </div>
+    <div class="col-md-4">
+      <label class="form-label" for="pa-category">Categories</label>
+      <input id="pa-category" class="form-control" formControlName="category" aria-describedby="pa-category-help" />
+      <div id="pa-category-help" class="form-text">Comma separated, e.g. Smart Phone, Camera</div>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label" for="pa-image">Image file</label>
+      <input id="pa-image" class="form-control" formControlName="imageFile" aria-describedby="pa-image-help" />
+      <div id="pa-image-help" class="form-text">A file in public/images/product, e.g. product-1.png</div>
+    </div>
+    <div class="col-md-8">
+      <label class="form-label" for="pa-description">Description</label>
+      <input id="pa-description" class="form-control" formControlName="description" />
+    </div>
+    <div class="col-md-4">
+      <label class="form-label" for="pa-price">Price</label>
+      <input id="pa-price" class="form-control" formControlName="price" type="number" step="0.01" min="0.01" />
+    </div>
+    <div class="col-12 d-flex gap-2">
+      <button type="submit" class="btn btn-primary" [disabled]="form.invalid || busy()">
+        {{ editingId() ? 'Save changes' : 'Create product' }}
+      </button>
+      @if (editingId()) {
+        <button type="button" class="btn btn-outline-secondary" (click)="reset()">Cancel</button>
+      }
+    </div>
+  </div>
+</form>
+
+<div class="table-responsive">
+  <table class="table align-middle">
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Categories</th>
+        <th scope="col" class="text-end">Price</th>
+        <th scope="col"><span class="visually-hidden">Actions</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (p of products(); track p.id) {
+        <tr [class.table-active]="editingId() === p.id">
+          <td>{{ p.name }}</td>
+          <td>{{ (p.category ?? []).join(', ') }}</td>
+          <td class="text-end">{{ p.price | currency }}</td>
+          <td class="text-end actions">
+            @if (confirmingDelete() === p.id) {
+              <span class="me-2">Delete {{ p.name }}?</span>
+              <button type="button" class="btn btn-danger btn-sm me-1" (click)="remove(p)">Yes, delete</button>
+              <button type="button" class="btn btn-outline-secondary btn-sm" (click)="confirmingDelete.set(null)">No</button>
+            } @else {
+              <button type="button" class="btn btn-outline-primary btn-sm me-1" (click)="edit(p)"
+                      [attr.aria-label]="'Edit ' + p.name">Edit</button>
+              <button type="button" class="btn btn-outline-danger btn-sm" (click)="confirmingDelete.set(p.id ?? null)"
+                      [attr.aria-label]="'Delete ' + p.name">Delete</button>
+            }
+          </td>
+        </tr>
+      } @empty {
+        <tr><td colspan="4">No products.</td></tr>
+      }
+    </tbody>
+  </table>
+</div>

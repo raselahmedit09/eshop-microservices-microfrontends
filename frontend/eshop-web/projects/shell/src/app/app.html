@@ -1,28 +1,71 @@
-<header class="topbar">
-  <a class="brand" routerLink="/">eShop</a>
-  <nav aria-label="Main">
-    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" ariaCurrentWhenActive="page">Home</a>
-    @if (auth.isLoggedIn()) {
-      <a routerLink="/cart" routerLinkActive="active" ariaCurrentWhenActive="page">Cart</a>
-      <a routerLink="/orders" routerLinkActive="active" ariaCurrentWhenActive="page">My orders</a>
-    }
-    <!-- Hiding the link is only a convenience; the backend's Admin policy is the real check -->
-    @if (auth.isAdmin()) {
-      <a routerLink="/admin" routerLinkActive="active" ariaCurrentWhenActive="page">Admin</a>
-    }
-  </nav>
+<header class="navbar navbar-dark bg-dark">
+  <div class="container flex-wrap gap-2">
+    <a class="navbar-brand" routerLink="/">eShop</a>
 
-  <div class="account">
-    @if (auth.isLoggedIn()) {
-      <span>{{ auth.displayName() }}</span>
-      <button type="button" (click)="auth.logout()">Log out</button>
-    } @else {
-      <button type="button" (click)="auth.login()">Log in / Sign up</button>
-    }
+    <nav aria-label="Main" class="me-auto">
+      <ul class="navbar-nav flex-row flex-wrap gap-3">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" ariaCurrentWhenActive="page">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/products" routerLinkActive="active" ariaCurrentWhenActive="page">Products</a>
+        </li>
+        @if (auth.isLoggedIn()) {
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/orders" routerLinkActive="active" ariaCurrentWhenActive="page">My orders</a>
+          </li>
+        }
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/contact" routerLinkActive="active" ariaCurrentWhenActive="page">Contact</a>
+        </li>
+        <!-- Hiding the link is only a convenience; the backend's Admin policy is the real check -->
+        @if (auth.isAdmin()) {
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/admin" routerLinkActive="active" ariaCurrentWhenActive="page">Admin</a>
+          </li>
+        }
+      </ul>
+    </nav>
+
+    <div class="account d-flex align-items-center gap-2">
+      <!-- The count comes from BasketStore, which the catalog remote updates when it adds an item -->
+      <a class="btn btn-outline-light btn-sm" routerLink="/cart">
+        <i class="bi bi-cart" aria-hidden="true"></i> Cart
+        <span class="badge bg-success">{{ basket.count() }}</span>
+        <span class="visually-hidden">items</span>
+      </a>
+      @if (auth.isLoggedIn()) {
+        <span class="navbar-text">{{ auth.displayName() }}</span>
+        <button type="button" class="btn btn-light btn-sm" (click)="auth.logout()">Log out</button>
+      } @else {
+        <button type="button" class="btn btn-light btn-sm" (click)="auth.login()">Log in / Sign up</button>
+      }
+    </div>
   </div>
 </header>
 
+<!-- Messages from any app (add to cart, API errors) -->
+<div class="toast-stack" aria-live="polite">
+  @for (t of notify.toasts(); track t.id) {
+    <div class="alert d-flex justify-content-between gap-2 mb-0" role="status"
+         [class.alert-success]="t.kind === 'success'" [class.alert-danger]="t.kind === 'error'">
+      <span>{{ t.text }}</span>
+      <button type="button" class="btn-close" aria-label="Close" (click)="notify.dismiss(t.id)"></button>
+    </div>
+  }
+</div>
+
 <!-- Remote routes (catalog, basket, orders) render here -->
-<main class="content">
+<main class="container py-4">
   <router-outlet />
 </main>
+
+<footer class="bg-dark text-light py-4 mt-5">
+  <div class="container d-flex flex-wrap justify-content-between gap-3">
+    <span>eShop Microservices</span>
+    <span>
+      <a class="link-light" routerLink="/privacy">Privacy</a> ·
+      <a class="link-light" routerLink="/contact">Contact</a>
+    </span>
+  </div>
+</footer>
